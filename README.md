@@ -7,7 +7,7 @@ lista = ["team leader","java","ecommerce","e-commerce","javascript","javascript+
 
 Run in terminal: 
 scrapy crawl linkedin -o mobile.json
-#The spider saves the founded urls into a json file an checks if there are already in the historic database 
+The spider saves the founded urls into a json file an checks if there are already in the historic database 
 
 -) Run crawl_linkedin script to scrape the founded urls 
-#This script crawls the web pages using selenium and stores the founded data into a tsv to be later converted to a xlsx for the client.
+This script crawls the web pages using selenium and stores the founded data into a tsv to be later converted to a xlsx for the client.
