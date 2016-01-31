@@ -8,6 +8,7 @@ __author__ = 'rsanchez'
 #detalle tiene todos los perfiles más los ocultos con None
 #al entrar nuevos busca si estan en intros y si no agrega, luego busca
 #si estan en detalle y si no n
+
 import re
 import pandas as pn
 import time
@@ -16,9 +17,10 @@ from Hays.items import HaysItem, HaysItem_detalle
 from selenium import webdriver
 from string import lower
 
+KEY = ""
 
 
-def login_linkedin(mail="raquel.sanchez@hays.com.mx",key="Rnnm345R"):
+def login_linkedin(mail="raquel.sanchez@hays.com.mx",key=KEY):
     """
         Saving a URL tuple to start
     """
@@ -139,14 +141,14 @@ def current_urls_in_db():
     current_urls = data["url"].tolist()
     return current_urls
 
-def get_items_reforma(current_urls, driver,mail="raquel.sanchez@hays.com.mx",key="Rnnm345"):
+def get_items_reforma(current_urls, driver,mail="raquel.sanchez@hays.com.mx",key=KEY):
     # AÑADIR ESTAS SECCIONES A LA LIMPIEZA DE SECCIONES
 
     #add new urls to url database
     add_new_url_list("mobile.json")
 
     #check which urls in list are not in detalle
-    urls = obtain_url_list()
+    urls = obtain_url_list()    
     print 'urls to record obtained'
     driver = login_linkedin()
     items = []
@@ -178,6 +180,13 @@ def get_items_reforma(current_urls, driver,mail="raquel.sanchez@hays.com.mx",key
     except:
         pass
 
+    ########################################
+    ########################################
+    ###Hasta aquí llegó lo guardé en un temporal
+    ########################################
+    ########################################
+
+    #Agregar a nuestra base de detalles
     detalle_old = pn.read_json("linkedin_detalle")
     data = df.append(detalle_old)
     data.reset_index(drop=True, inplace=True)
@@ -194,21 +203,26 @@ def get_items_reforma(current_urls, driver,mail="raquel.sanchez@hays.com.mx",key
         else:
             return 0
 
-    list = [" pmp "," pmi ","microstrategy","banking","tableau","qlickview","project","consultant","mobile","android",
-            "ios"]
-    dict = {
-        " pmp ":" pmp ",
-        " pmi ":" pmi ",
-        "microstrategy":"microstrategy",
-        "banking":"banking|banca",
-        "tableau":"tableau",
-        "qlickview":"qlickview",
-        "project":"project|proyecto",
-        "consultant":"consultant|consultor",
-        "mobile":"mobile|móvil",
-        "android":"android",
-        "ios":" ios "
-    }
+
+
+    list = ["it","team leader","java","ecommerce","e-commerce","javascript","backbone"]
+
+    #list = [" pmp "," pmi ","microstrategy","banking","tableau","qlickview","project","consultant","mobile","android","ios"]
+    # dict = {
+    #     " pmp ":" pmp ",
+    #     " pmi ":" pmi ",
+    #     "microstrategy":"microstrategy",
+    #     "banking":"banking|banca",
+    #     "tableau":"tableau",
+    #     "qlickview":"qlickview",
+    #     "project":"project|proyecto",
+    #     "consultant":"consultant|consultor",
+    #     "mobile":"mobile|móvil",
+    #     "android":"android",
+    #     "ios":" ios "
+    # }
+
+    dict = {"it":"it","team leader":"team leader","java":"java","ecommerce":"ecommerce","e-commerce":"e-commerce","javascript":"javascript","backbone":"backbone"}
 
     for each in list:
         data[each.strip()] = 0

@@ -13,7 +13,6 @@ BOT_NAME = 'Hays'
 SPIDER_MODULES = ['Hays.spiders']
 NEWSPIDER_MODULE = 'Hays.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'Hays (+http://www.yourdomain.com)'
 

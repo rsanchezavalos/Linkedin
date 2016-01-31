@@ -15,6 +15,7 @@ from scrapy import signals
 # from scrapy import Spider
 # import urllib2
 from selenium import webdriver
+KEY = 
 def try_item(x):
     try:
         res = x
@@ -40,7 +41,7 @@ class linkedin_id(scrapy.Spider):
 
     def parse(self, response):
         fp = webdriver.FirefoxProfile()
-        driver = webdriver.Firefox(firefox_profile=fp)
+        driver = webdriver.Firefox()
 
         start_urls = ['https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww%2Elinkedin%'
                        '2Ecom%2Fvsearch%2Fp%3Fkeywords%3DIT%252C%2Bmanager%26locationType%3DI%26rsid'
@@ -48,19 +49,18 @@ class linkedin_id(scrapy.Spider):
 
         driver.get(start_urls[0])
         driver.find_element_by_id("session_key-login").send_keys("raquel.sanchez@hays.com.mx")
-        driver.find_element_by_id("session_password-login").send_keys("Rnnm345R")
+        driver.find_element_by_id("session_password-login").send_keys(KEY)
         bttn = driver.find_element_by_id("btn-primary")
         bttn.click()
         time.sleep(5)
-
         #necesarias = "IT%2C+manager"#
-        necesarias = "it+"
-        lista = ["it","developer","architect","mobile"]
-        #lista = ["","pmp","pmi","microstrategy","banking","pmp%2C+pmi%2C+microstrategy%2C+banking"]#enumerate
-        #lista_completa = ["","pmp","pmi","microstrategy","banking","tableau","qlickview"]#enumerate
+        necesarias = "it+developer+leader"
+        #necesarias = "javascript+backbone"
+        lista = ["team leader","java","ecommerce","e-commerce","javascript","javascript+backbone"]
 
         urls = []
         print "check 1"
+
         for y in lista:
             url = "https://www.linkedin.com/vsearch/p?" \
                   "keywords={0}%2C+{1}&" \
@@ -92,60 +92,60 @@ class linkedin_id(scrapy.Spider):
             perfil_dict = {}
 
             for j in range(1,n_paginas + 1):
-                for i in range(10):
+                for i in range(1,11):
+                    print i
                     try:
-                        try:
-                            perfil = driver.find_element_by_xpath('//li[@class="mod result idx{0} people"]'.format(i))
-                            url = perfil.find_element_by_class_name("title").get_attribute("href")
-                            id = re.search("id=([0-9]+)",url).group(1)
-                            perfil_dict["{0}".format(id)] = {}
-                            perfil_dict["{0}".format(id)]["url"] = url
-                        except:
-                            pass
-                        try:
-                            nombre = perfil.find_element_by_class_name("title").text
-                            perfil_dict["{0}".format(id)]["nombre"] = nombre
-                        except:
-                            pass
-
-                        try:
-                            descripcion = perfil.find_element_by_class_name("description").text
-                            perfil_dict["{0}".format(id)]["descripcion"] = descripcion
-                        except:
-                            pass
-                        try:
-                            demographic = perfil.find_element_by_class_name("demographic")
-                            try:
-                                sector = demographic.find_element_by_xpath('//dd[@class=""]').text
-                                perfil_dict["{0}".format(id)]["sector"] = sector
-                            except:
-                                pass
-                            try:
-                                ubicacion = demographic.find_element_by_xpath('//dd[@class="separator"]').text
-                                perfil_dict["{0}".format(id)]["ubicacion"] = ubicacion
-                            except:
-                                pass
-                        except:
-                            pass
-                        try:
-                            snippet = perfil.find_element_by_class_name("snippet").text
-                            perfil_dict["{0}".format(id)]["snippet"] = snippet
-                        except:
-                            pass
-                        try:
-                            #not working
-                            similar = perfil.find_element_by_xpath('//li[@class="similar"]//a').get_attribute("href")
-                            perfil_dict["{0}".format(id)]["similar"] = similar
-                        except:
-                            pass
-                        try:
-                            bttn = driver.find_element_by_xpath('//li[@class="next"]//a[@class="page-link"]')
-                            bttn.click()
-                            time.sleep(5)
-                        except:
-                            break
+                        perfil = driver.find_element_by_xpath('//li[@class="mod result idx{0} people"]'.format(i))
+                        url = perfil.find_element_by_class_name("title").get_attribute("href")
+                        id = re.search("id=([A-Za-z0-9_-]*)",url).group(1)
+                        print id
+                        perfil_dict["{0}".format(id)] = {}
+                        perfil_dict["{0}".format(id)]["url"] = url
                     except:
-                        break
+                        pass
+                    try:
+                        nombre = perfil.find_element_by_class_name("title").text
+                        perfil_dict["{0}".format(id)]["nombre"] = nombre
+                    except:
+                        pass
+
+                    try:
+                        descripcion = perfil.find_element_by_class_name("description").text
+                        perfil_dict["{0}".format(id)]["descripcion"] = descripcion
+                    except:
+                        pass
+
+                    try:
+                        demographic = perfil.find_element_by_class_name("demographic")
+                        try:
+                            sector = demographic.find_element_by_xpath('//dd[@class=""]').text
+                            perfil_dict["{0}".format(id)]["sector"] = sector
+                        except:
+                            pass
+                        try:
+                            ubicacion = demographic.find_element_by_xpath('//dd[@class="separator"]').text
+                            perfil_dict["{0}".format(id)]["ubicacion"] = ubicacion
+                        except:
+                            pass
+                    except:
+                        pass
+                    try:
+                        snippet = perfil.find_element_by_class_name("snippet").text
+                        perfil_dict["{0}".format(id)]["snippet"] = snippet
+                    except:
+                        pass
+                    try:
+                        #not working
+                        similar = perfil.find_element_by_xpath('//li[@class="similar"]//a').get_attribute("href")
+                        perfil_dict["{0}".format(id)]["similar"] = similar
+                    except:
+                        pass
+                try:
+                    bttn = driver.find_element_by_xpath('//li[@class="next"]//a[@class="page-link"]')
+                    bttn.click()
+                    time.sleep(5)
+                except:
+                    pass
 
                 #temporal
                 # a = str(perfil_dict)
@@ -153,15 +153,15 @@ class linkedin_id(scrapy.Spider):
                 # data["id"] = data.index
                 # data.to_csv("linkedin_temp.csv", encoding="utf8", index=False)
 
-        for each in perfil_dict.keys():
-            urli = perfil_dict.get(each).get("url")
-            similari = perfil_dict.get(each).get("similar")
-            nombrei = perfil_dict.get(each).get("nombre")
-            descripcioni = perfil_dict.get(each).get("descripcion")
-            snippeti = perfil_dict.get(each).get("snippet")
-            ubicacioni = perfil_dict.get(each).get("ubicacion")
-            yield HaysItem(url=urli,similar=similari,nombre=nombrei,descripcion=descripcioni,
-                           snippet=snippeti,ubicacion=ubicacioni)
+            for each in perfil_dict.keys():
+                urli = perfil_dict.get(each).get("url")
+                similari = perfil_dict.get(each).get("similar")
+                nombrei = perfil_dict.get(each).get("nombre")
+                descripcioni = perfil_dict.get(each).get("descripcion")
+                snippeti = perfil_dict.get(each).get("snippet")
+                ubicacioni = perfil_dict.get(each).get("ubicacion")
+                yield HaysItem(url=urli,similar=similari,nombre=nombrei,descripcion=descripcioni,
+                               snippet=snippeti,ubicacion=ubicacioni)
 
 
 """
