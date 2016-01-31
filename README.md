@@ -11,3 +11,6 @@ The spider saves the founded urls into a json file an checks if there are alread
 
 -) Run crawl_linkedin script to scrape the founded urls 
 This script crawls the web pages using selenium and stores the founded data into a tsv to be later converted to a xlsx for the client.
+
+
+Final file -> perfiles_hays.xlsx
