@@ -1,2 +1,0 @@
-#revisa del buscador, guarda páginas e id's
-scrapy crawl linkedin -o urls_linkedin.json
